@@ -52,6 +52,8 @@ news-article/
 │   │   └── layout/            # Layout components
 │   ├── hooks/                 # Custom React hooks
 │   ├── pages/                 # Page components
+|   |       ├── Articles       # Articles List Page
+|   |       ├── Upload         # Article Upload Page
 │   ├── services/              # API and service layer
 │   ├── theme/                 # Theme configuration
 │   └── types/                 # TypeScript type definitions
@@ -158,12 +160,9 @@ const useInfiniteScroll = (callback: () => void, hasMore: boolean) => {
 ### Code Quality
 - **ESLint**: Strict TypeScript rules
 - **Prettier**: Consistent code formatting
-- **Husky**: Pre-commit hooks for code quality
 
 ### Performance
 - Debounced search to prevent excessive re-renders
-- Lazy loading of components
-- Memoization of expensive computations
 
 ## License
 
