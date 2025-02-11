@@ -1,62 +1,170 @@
-# News-Article
-Take-home assignment for front-end developer.
+# NewsNexus - News Article Management System
+
+A modern, responsive news article management system built with React, TypeScript, and Material-UI. This application provides a clean interface for creating, reading, updating, and deleting news articles with features like infinite scrolling and real-time search.
+
+## Features
+
+- 🎯 **CRUD Operations**: Complete article management system
+- 🎨 **Modern UI**: Clean interface built with Material-UI
+- 🌙 **Dark Mode**: Fully supported light/dark theme switching
+- 🔍 **Search**: Real-time article filtering
+- ♾️ **Infinite Scroll**: Smooth pagination implementation
+- 📱 **Responsive**: Mobile-first design approach
+- 🧪 **Type-Safe**: Built with TypeScript
+- 🎭 **Mock API**: Local storage-based data persistence
 
 ## Getting Started
-Please review the information in this section before you get started with your development. 
-* Create a personal fork of the project on Github.
-* Clone the fork on to your local machine.
-* Implement your solution and the rest of git basics applies.
-* When you are ready, submit for review by providing the link of your forked repo to our recruitment team.
 
-### Requirements:
-* Use TypeScript and React to build the application.
-* Use any CSS framework or libraries (e.g., Bootstrap, Material-UI) to style your components.
-* Use a router library like React Router to handle page navigation.
-* Use an API library like Axios for making HTTP requests to your backend or mock API.
-* You may choose any database of your choice (e.g., SQLite, MongoDB, MySQL, etc.) or you can use a mock API for data persistence.
-* Implement error handling and validation for form submissions.
-* Write clean and maintainable code, following best practices.
-* Provide clear instructions on how to run the application locally and any setup steps required.
+### Prerequisites
 
-### Tools
-You may choose to use any IDE (Integrated Development Environment) tools you are comfortable with.
+- Node.js (v18.0.0 or higher)
+- npm (v7.0.0 or higher)
 
-## Your Task
-Create a simple CRUD application:
-1. You need to create a 2-page web application using TypeScript and React. 
-2. The application should allow users to create, update, fetch, and display news articles in a database. 
+### Installation
 
-### Page 1: Create / Update News Articles
-Design a web page with a form to create or update news articles. The form should include the following fields for a news article:
-* Article Title (text input)
-* Article Summary (textarea)
-* Article date (date input)
-* Publisher Of Article (text input)
+1. Clone the repository:
+```bash
+git clone https://github.com/s4nat/news-article-assignment.git
+cd news-article-assignment
+```
 
-When the form is submitted:
-* If all fields are filled, the article should be created or updated in the database.
-* If any field is missing, show appropriate error messages and prevent submission.
-* After successful submission, clear the form fields so that user can input next article
-* Provide a navigation link to the fetch/display page.
+2. Install dependencies:
+```bash
+npm install
+```
 
-### Page 2: Fetch / Display News Articles
-Design a web page to fetch and display the articles from the database.
-* Fetch the articles when the page loads and display them in a visually appealing way (e.g., as a list or table). You can display publisher of article/title/summary and date of article
-* Provide a navigation link to the update article.
+3. Start the development server:
+```bash
+npm run dev
+```
 
-Sample page design for guidance
-![Display Page Design](https://github.com/chunyang-hs/news-article/blob/master/sample-display-page-design.png)
+4. Open your browser and navigate to `http://localhost:5173`
 
-### Bonus (Optional):
-You may also consider adding the following features if times permit:
-* Include a refresh button to fetch the latest articles from the database.
-* Add delete functionality to remove articles from the database.
-* Implement pagination or infinite scrolling for fetching and displaying articles.
-* Add search functionality to filter articles based on specific criteria.
-* Use a state management library like Redux or MobX to manage the application's state.
+## Project Structure
 
-## Final Notes
-Feel free to adjust the requirements and scope of the assignment according to your preferences and time constraints. 
-Remember to include clear instructions and any necessary information for running the application. 
+```
+news-article/
+├── src/
+│   ├── components/
+│   │   ├── articles/           # Article-related components
+│   │   │   ├── ArticleForm/    # Create/Edit form
+│   │   │   └── ArticleList/    # List view components
+│   │   └── layout/            # Layout components
+│   ├── hooks/                 # Custom React hooks
+│   ├── pages/                 # Page components
+│   ├── services/              # API and service layer
+│   ├── theme/                 # Theme configuration
+│   └── types/                 # TypeScript type definitions
+└── public/                    # Static assets
+```
 
-Good luck with your assignment, and feel free to ask any questions if you need further assistance!
+## Key Components
+
+### ArticleForm
+- Handles both creation and editing of articles
+- Form validation with error messages
+- Success/error state management
+- Auto-navigation after successful submission
+
+### ArticleList
+- Displays articles in a card layout
+- Implements infinite scrolling
+- Real-time search functionality
+- Article deletion with confirmation
+
+### AppLayout
+- Responsive layout with sidebar navigation
+- Theme switching capability
+- Consistent spacing and typography
+
+## Key Functionalities
+
+### Theme Implementation
+- System preference detection for initial theme
+- Persistent theme selection using localStorage
+- Smooth transitions between themes
+- Comprehensive theme configuration for all components
+
+```typescript
+// Theme configuration example
+const getThemeConfig = (mode: 'light' | 'dark'): ThemeOptions => ({
+  palette: {
+    mode,
+    primary: {
+      main: mode === 'light' ? '#000000' : '#FFFFFF',
+    },
+    background: {
+      default: mode === 'light' ? '#FFFFFF' : '#191919',
+      paper: mode === 'light' ? '#FFFFFF' : '#262626',
+    },
+    text: {
+      primary: mode === 'light' ? '#000000' : '#FFFFFF',
+      secondary: mode === 'light' ? '#666666' : '#999999',
+    },
+  }
+});
+```
+
+### Search Implementation
+- Real-time filtering using debounced input
+- Searches across title, summary, and publisher fields
+- Updates results without page reload
+
+```typescript
+const handleSearch = (query: string) => {
+  const filtered = articles.filter(article => 
+    article.title.toLowerCase().includes(query.toLowerCase()) ||
+    article.summary.toLowerCase().includes(query.toLowerCase()) ||
+    article.publisher.toLowerCase().includes(query.toLowerCase())
+  );
+  setFilteredArticles(filtered);
+  setPage(1);
+};
+```
+
+### Infinite Scroll
+- Custom hook implementation
+- Efficient pagination with configurable page size
+- Smooth loading experience
+
+```typescript
+const useInfiniteScroll = (callback: () => void, hasMore: boolean) => {
+  const handleScroll = useCallback(() => {
+    if (!hasMore) return;
+    
+    const scrolledToBottom =
+      window.innerHeight + document.documentElement.scrollTop
+      === document.documentElement.offsetHeight;
+
+    if (scrolledToBottom) {
+      callback();
+    }
+  }, [callback, hasMore]);
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
+};
+```
+
+### Delete Functionality
+- Optimistic updates for better UX
+- Error handling with user feedback
+- Automatic list refresh after deletion
+
+## Development Considerations
+
+### Code Quality
+- **ESLint**: Strict TypeScript rules
+- **Prettier**: Consistent code formatting
+- **Husky**: Pre-commit hooks for code quality
+
+### Performance
+- Debounced search to prevent excessive re-renders
+- Lazy loading of components
+- Memoization of expensive computations
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
